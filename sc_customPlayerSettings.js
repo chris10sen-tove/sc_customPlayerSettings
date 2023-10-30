@@ -31,14 +31,36 @@ videojs.registerPlugin('customSettingsButton', function() {
     settingsMenu.style.display = settingsMenu.style.display === "block" ? "none" : "block";
   });
 
-  // Add functionality for the "Captions" and "Audio Track" options here
+  // Logic for handling captions
   captionsOption.addEventListener("click", function() {
-    // Add your logic for captions here
-    console.log("Captions clicked");
+    const captionsMenu = player.$(".vjs-menu.vjs-lock-showing");
+    const captionsOffItem = captionsMenu.querySelector(".vjs-menu-item.vjs-selected");
+    const captionsLanguageItem = captionsMenu.querySelector(".vjs-menu-item.vjs-subtitles-menu-item");
+
+    // Handle captions based on their states
+    if (captionsOffItem.getAttribute("aria-checked") === "true") {
+      // Captions are currently off, you can turn them on or switch to a specific language
+      console.log("Captions are currently off.");
+    } else if (captionsLanguageItem.getAttribute("aria-checked") === "true") {
+      // A specific language is selected
+      const language = captionsLanguageItem.querySelector(".vjs-menu-item-text").innerText;
+      console.log("Selected captions language: " + language);
+    }
   });
 
+  // Logic for handling audio tracks
   audioTrackOption.addEventListener("click", function() {
-    // Add your logic for audio track here
-    console.log("Audio Track clicked");
+    const audioTracksMenu = player.$(".vjs-menu");
+    const mainAudioTrackItem = audioTracksMenu.querySelector(".vjs-menu-item.vjs-main-menu-item");
+    const descriptiveAudioTrackItem = audioTracksMenu.querySelector(".vjs-menu-item.vjs-alternative-menu-item");
+
+    // Handle audio tracks based on their states
+    if (mainAudioTrackItem.getAttribute("aria-checked") === "true") {
+      // Main audio track is selected
+      console.log("Main audio track is selected.");
+    } else if (descriptiveAudioTrackItem.getAttribute("aria-checked") === "true") {
+      // Descriptive audio track is selected
+      console.log("Descriptive audio track is selected.");
+    }
   });
 });

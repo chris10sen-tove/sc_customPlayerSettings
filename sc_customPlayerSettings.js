@@ -1,46 +1,50 @@
-videojs.registerPlugin('combineSettingsButton', function () {
-  var vPlayer = this;
-  var settingsButton = document.createElement("div");
-  settingsButton.className = "vjs-settings-button vjs-menu-button vjs-menu-button-popup vjs-control vjs-button";
-  settingsButton.innerHTML = "<button class='vjs-settings-button vjs-menu-button vjs-menu-button-popup vjs-button' type='button' aria-disabled='false' title='Settings' aria-haspopup='true' aria-expanded='false'><span class='vjs-icon-placeholder' aria-hidden='true'><i class='fa fa-cog'></i></span><span class='vjs-control-text' aria-live='polite'>Settings</span></button>";
+videojs.registerPlugin('test', function() {
+  // +++ Create divs for buttons +++
+  var vPlayer = this,
+    jumpAmount = 15,
+    controlBar,
+    insertBeforeNode,
+    newElementBB = document.createElement("div"),
+    newElementFB = document.createElement("div");
 
-  var captionsButton = vPlayer.$(".vjs-subs-caps-button");
-  var audioButton = vPlayer.$(".vjs-audio-button");
+  // +++ Assign properties to elements and assign to parents +++
+  newElementBB.innerHTML = "<button class='vjs-control vjs-button vjs-skip-back' type='button' title='Skip Back 15 Seconds' aria-disabled='false'><span class='vjs-icon-placeholder' aria-hidden='true'></span><span class='vjs-control-text' aria-live='polite'>Skip Back 15 Seconds</span></button>";
+  newElementFB.innerHTML = "<button class='vjs-control vjs-button vjs-skip-ahead' type='button' title='Skip Ahead 15 Seconds' aria-disabled='false'><span class='vjs-icon-placeholder' aria-hidden='true'></span><span class='vjs-control-text' aria-live='polite'>Skip Ahead 15 Seconds</span></button>";
+  
+  // +++ Get controlbar and insert elements +++
+  controlBar = vPlayer.$(".vjs-control-bar");
+  // Get the element to insert buttons in front of in conrolbar
+  insertBeforeNode = vPlayer.$(".vjs-volume-panel");
 
-  if (captionsButton) {
-    captionsButton.style.display = "none";
-  }
-  if (audioButton) {
-    audioButton.style.display = "none";
-  }
+  // Insert the button div in proper location
+  controlBar.insertBefore(newElementBB, insertBeforeNode);
+  controlBar.insertBefore(newElementFB, insertBeforeNode);
 
-  var controlBar = vPlayer.$(".vjs-control-bar");
-  var insertBeforeNode = vPlayer.$(".vjs-volume-panel");
+  // +++ Add event handlers to jump back or forward +++
+  // Back button logic, don't jump to negative times
+  newElementBB.addEventListener("click", function() {
+    var newTime,
+      rewindAmt = jumpAmount,
+      videoTime = vPlayer.currentTime();
+    if (videoTime >= rewindAmt) {
+      newTime = videoTime - rewindAmt;
+    } else {
+      newTime = 0;
+    }
+    vPlayer.currentTime(newTime);
+  });
 
-  controlBar.insertBefore(settingsButton, insertBeforeNode);
-
-  var settingsMenu = document.createElement("div");
-  settingsMenu.className = "vjs-menu";
-  settingsMenu.innerHTML = "<ul class='vjs-menu-content' role='menu'>" +
-    "<li class='vjs-menu-item vjs-texttrack-settings' tabindex='-1' role='menuitem' aria-disabled='false'>" +
-    "<span class='vjs-menu-item-text'>captions settings</span>" +
-    "<span class='vjs-control-text' aria-live='polite'>, opens captions settings dialog</span></li>" +
-    "<li class='vjs-menu-item vjs-selected' tabindex='-1' role='menuitemradio' aria-disabled='false' aria-checked='true'>" +
-    "<span class='vjs-menu-item-text'>captions off</span>" +
-    "<span class='vjs-control-text' aria-live='polite'>, selected</span></li>" +
-    "<li class='vjs-menu-item vjs-subtitles-menu-item' tabindex='-1' role='menuitemradio' aria-disabled='false' aria-checked='false'>" +
-    "<span class='vjs-menu-item-text'>English</span>" +
-    "<span class='vjs-control-text' aria-live='polite'></span></li>" +
-    "<li class='vjs-menu-item vjs-main-menu-item' tabindex='-1' role='menuitemradio' aria-disabled='false' aria-checked='true'>" +
-    "<span class='vjs-menu-item-text'>en (Main)</span>" +
-    "<span class='vjs-control-text' aria-live='polite'>, selected</span></li>" +
-    "<li class='vjs-menu-item vjs-alternative-menu-item' tabindex='-1' role='menuitemradio' aria-disabled='false' aria-checked='false'>" +
-    "<span class='vjs-menu-item-text'>en (Descriptive)</span>" +
-    "<span class='vjs-control-text' aria-live='polite'></span></li></ul>";
-
-  settingsButton.appendChild(settingsMenu);
-
-  settingsButton.addEventListener("click", function () {
-    settingsMenu.style.display = (settingsMenu.style.display === 'block') ? 'none' : 'block';
+  // Forward button logic, don't jump past the duration
+  newElementFB.addEventListener("click", function() {
+    var newTime,
+      forwardAmt = jumpAmount,
+      videoTime = vPlayer.currentTime(),
+      videoDuration = vPlayer.duration();
+    if (videoTime + forwardAmt <= videoDuration) {
+      newTime = videoTime + forwardAmt;
+    } else {
+      newTime = videoDuration;
+    }
+    vPlayer.currentTime(newTime);
   });
 });

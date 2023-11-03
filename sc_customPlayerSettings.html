@@ -1,23 +1,27 @@
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link href="https://vjs.zencdn.net/7.15.4/video-js.css" rel="stylesheet">
-        <script src="https://vjs.zencdn.net/7.15.4/video.js"></script>
-        <link rel="stylesheet" href="sc_customPlayerSettings.css">
-        <title>Video Player Settings</title>
-    </head>
-    <body>
-        <video
-            class="video-js"
-            controls=""
-            preload="none"
-            width="640"
-            height="360"
-        >
-        <source src="" type="video/mp4" />
-        </video>
-    <script src="sc_customPlayerSettings.js"></script>
-    </body>
+<html>
+<head>
+    <title>Brightcove Video Player</title>
+    <!-- Include the Brightcove Player's script -->
+    <script src="https://players.brightcove.net/18140038001/default_default/index.min.js"></script>
+</head>
+<body>
+    <!-- Create a div element with a unique ID to embed the player -->
+    <div id="myPlayer"></div>
+
+    <script>
+        // Initialize the Brightcove Player
+        videojs("myPlayer", {
+            "techOrder": ["html5"],
+            "sources": [
+                {
+                    "src": "",
+                    "type": "video/mp4"
+                }
+            ],
+            "width": 640,
+            "height": 360
+        });
+    </script>
+</body>
 </html>
